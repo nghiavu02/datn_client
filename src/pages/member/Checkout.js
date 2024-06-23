@@ -13,6 +13,15 @@ const Checkout = ({ dispatch, navigate }) => {
   useEffect(() => {
     if (isSuccess) dispatch(getCurrent());
   }, [isSuccess]);
+
+  let tong = 0;
+  let phi = 0;
+  tong = currentCart?.reduce((sum, el) => +el.price * el.quantity + sum, 0);
+  if (tong < 300000) {
+    tong = tong + 40000;
+    phi = 40000;
+  }
+  console.log(currentCart);
   return (
     <div className="p-8 w-full grid grid-cols-10 h-full max-h-screen overflow-y-auto gap-6">
       {isSuccess && <Congrat />}
@@ -20,7 +29,7 @@ const Checkout = ({ dispatch, navigate }) => {
         <img src={payment} alt="payment" className="h-[70%] object-contain" />
       </div> */}
       <div className="w-full flex flex-col justify-center col-span-10 gap-6">
-        <h2 className="text-3xl mb-6 font-bold">Checkout your order</h2>
+        <h2 className="text-3xl mb-6 font-bold">Thanh toán đơn hàng</h2>
         <div className="flex w-full gap-5">
           <div className="flex-1">
             <table className="table-auto h-fit w-full">
@@ -55,29 +64,35 @@ const Checkout = ({ dispatch, navigate }) => {
           <div className="flex-1 flex flex-col justify-between gap-[45px]">
             <div className="flex flex-col gap-6">
               <span className="flex items-center gap-8 text-sm">
-                <span className="font-medium">Subtotal:</span>
-                <span className="text-main font-bold">{`${formatMoney(
-                  currentCart?.reduce(
-                    (sum, el) => +el.price * el.quantity + sum,
-                    0
-                  )
-                )} vnd`}</span>
+                <span className="font-medium">Phí giao hàng:</span>
+                <span className="text-main font-bold">
+                  {phi === 0 ? "Miễn phí" : "40.000 VND"}
+                </span>
               </span>
               <span className="flex items-center gap-8 text-sm">
-                <span className="font-medium">Address:</span>
+                <span className="font-medium">Thành tiền:</span>
+                <span className="text-main font-bold">{`${formatMoney(
+                  tong
+                )} VND`}</span>
+              </span>
+              <span className="flex items-center gap-8 text-sm">
+                <span className="font-medium">Địa chỉ nhận hàng:</span>
                 <span className="text-main font-bold">{current?.address}</span>
+              </span>
+              <span className="flex items-center gap-8 text-sm">
+                <span className="font-medium">Số điện thoại nhận hàng:</span>
+                <span className="text-main font-bold">{current?.mobile}</span>
               </span>
             </div>
             <div className="w-full mx-auto">
               <Paypal
                 payload={{
                   products: currentCart,
-                  total: Math.round(
+                  total:
                     +currentCart?.reduce(
                       (sum, el) => +el.price * el.quantity + sum,
                       0
-                    ) / 23500
-                  ),
+                    ) / 23500,
                   address: current?.address,
                 }}
                 setIsSuccess={setIsSuccess}

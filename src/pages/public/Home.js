@@ -12,14 +12,27 @@ import { useSelector } from "react-redux";
 import icons from "../../ultils/icons";
 import withBaseComponent from "hocs/withBaseComponent";
 import { createSearchParams } from "react-router-dom";
+import { apiGetCategories } from "apis";
 
 const { IoIosArrowForward } = icons;
 
 const Home = ({ navigate }) => {
   const { newProducts } = useSelector((state) => state.products);
-  const { categories } = useSelector((state) => state.app);
+  // const { categories } = useSelector((state) => state.app);
   const { isLoggedIn, current } = useSelector((state) => state.user);
-
+  const [categories, setCategories] = useState([]);
+  const fetchApi = async () => {
+    const response = await apiGetCategories({
+      //  limit: process.env.REACT_APP_LIMIT,
+    });
+    if (response.success) {
+      setCategories(response.categories);
+    }
+  };
+  useEffect(() => {
+    fetchApi();
+  }, []);
+  // console.log(categories);
   return (
     <div>
       <div className="w-main flex mt-6">

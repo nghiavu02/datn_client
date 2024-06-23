@@ -1,5 +1,6 @@
 import { apiGetOrders, apiGetProducts, apiGetUsers } from "apis";
 import React, { useEffect, useState } from "react";
+import { formatMoney } from "ultils/helpers";
 
 const Dashboard = () => {
   const [startDate, setStartDate] = useState("");
@@ -12,11 +13,9 @@ const Dashboard = () => {
   const handleStartDateChange = (event) => {
     setStartDate(event.target.value);
   };
-
   const handleEndDateChange = (event) => {
     setEndDate(event.target.value);
   };
-  console.log(startDate, endDate);
   const handleThongke = async (event) => {
     const responseOrder = await apiGetOrders();
     const responseProduct = await apiGetProducts({ limit: 100 });
@@ -39,7 +38,6 @@ const Dashboard = () => {
 
     // filterList(getOrders, setCountOrder);
     // filterList()
-    console.log(countOrder);
   };
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -60,7 +58,6 @@ const Dashboard = () => {
     setCountUser(getUser.users);
     setCountProduct(getProduct.products);
   };
-  console.log(countOrder);
 
   useEffect(() => {
     fetchApi();
@@ -108,12 +105,14 @@ const Dashboard = () => {
           <p className="text-3xl font-[600]">{countUser.length || 0}</p>
         </div>
         <div className="bg-white p-4 shadow-md rounded-md">
-          <h2 className="text-lg font-medium mb-2">Doanh thu</h2>
+          <h2 className="text-lg font-medium mb-2">Doanh thu(VND)</h2>
           <p className="text-3xl font-[600]">
-            $
-            {countOrder.reduce((toal, value) => {
-              return toal + value.total;
-            }, 0) || 0}
+            {formatMoney(
+              countOrder.reduce((toal, value) => {
+                return toal + value.total;
+              }, 0)
+            ) || 0}
+            {/* ₫ */}
           </p>
         </div>
         <div className="bg-white p-4 shadow-md rounded-md">

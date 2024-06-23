@@ -37,6 +37,7 @@ import {
 } from "pages/member";
 import { showCart } from "store/app/appSlice";
 import OrderDetail from "pages/admin/OrderDetail";
+import ManageCategories from "pages/admin/ManageCategories";
 
 function App() {
   const dispatch = useDispatch();
@@ -76,6 +77,7 @@ function App() {
           <Route path={path.MANAGE_ORDER} element={<ManageOrders />} />
           <Route path={path.MANAGE_PRODUCTS} element={<ManageProducts />} />
           <Route path={path.MANAGE_USER} element={<ManageUser />} />
+          <Route path={path.MANAGE_CATEGORIES} element={<ManageCategories />} />
           <Route path={path.CREATE_PRODUCTS} element={<CreateProducts />} />
           {/* <Route path={'/chitiet'} element={<OrderDetail/>}/> */}
         </Route>

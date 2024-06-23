@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { apiDeleteUser, apiGetUsers, apiUpdateUser } from "apis";
-import { roles, blockStatus } from "ultils/contants";
+import { roles, blockStatus, sorts } from "ultils/contants";
 import moment from "moment";
 import { InputField, Pagination, InputForm, Select, Button } from "components";
 import useDebounce from "hooks/useDebounce";
@@ -35,6 +35,7 @@ const ManageUser = () => {
     const response = await apiGetUsers({
       ...params,
       limit: process.env.REACT_APP_LIMIT,
+      sort: "-updatedAt",
     });
     if (response.success) setUsers(response);
     // console.log(response);
@@ -56,29 +57,29 @@ const ManageUser = () => {
     if (response.success) {
       setEditElm(null);
       render();
-      toast.success(response.mes);
-    } else toast.error(response.mes);
+      toast.success("Thành công");
+    } else toast.error("Thất bại");
   };
 
   const handleDeleteUser = (uid) => {
     Swal.fire({
-      title: "Are you sure...",
-      text: "Are you ready remove this user?",
+      title: "Xác nhận...",
+      text: "Bạn có chắc chắn muốn xóa tài khoản này?",
       showCancelButton: true,
     }).then(async (result) => {
       if (result.isConfirmed) {
         const response = await apiDeleteUser(uid);
         if (response.success) {
           render();
-          toast.success(response.mes);
-        } else toast.error(response.mes);
+          toast.success("Xóa thành công");
+        } else toast.error("Thất bại");
       }
     });
   };
   return (
     <div className={clsx("w-full", editElm && "pl-16")}>
-      <h1 className="h-[75px] flex justify-between items-center text-3xl font-bold px-4 border-b">
-        <span>Manage users</span>
+      <h1 className="h-[75px] flex justify-between items-center text-3xl font-[600] px-4 border-b">
+        <span>Tài khoản</span>
       </h1>
       <div className="w-full p-4">
         <div className="flex justify-end py-4">
@@ -87,7 +88,7 @@ const ManageUser = () => {
             value={queries.q}
             setValue={setQueries}
             style={"w500"}
-            placeholder="Search name or mail user..."
+            placeholder="Tìm theo email, họ, tên, role..."
             isHideLabel
           />
         </div>
@@ -97,13 +98,13 @@ const ManageUser = () => {
             <thead className="font-bold bg-gray-700 text-[13px] text-white">
               <tr className="border border-gray-500">
                 <th className="px-4 py-2">#</th>
-                <th className="px-4 py-2">Email address</th>
-                <th className="px-4 py-2">Firstname</th>
-                <th className="px-4 py-2">Lastname</th>
+                <th className="px-4 py-2">Email</th>
+                <th className="px-4 py-2">Họ</th>
+                <th className="px-4 py-2">Tên</th>
                 <th className="px-4 py-2">Role</th>
-                <th className="px-4 py-2">Phone</th>
-                <th className="px-4 py-2">Created At</th>
-                <th className="px-4 py-2">Actions</th>
+                <th className="px-4 py-2">SDT</th>
+                <th className="px-4 py-2">Ngày sửa</th>
+                <th className="px-4 py-2"></th>
               </tr>
             </thead>
             <tbody>
@@ -141,7 +142,7 @@ const ManageUser = () => {
                         defaultValue={editElm?.firstname}
                       />
                     ) : (
-                      <span>{el.firstname}</span>
+                      <span>{el.lastname}</span>
                     )}
                   </td>
                   <td className="py-2 px-4">
@@ -155,7 +156,7 @@ const ManageUser = () => {
                         defaultValue={editElm?.lastname}
                       />
                     ) : (
-                      <span>{el.lastname}</span>
+                      <span>{el.firstname}</span>
                     )}
                   </td>
                   <td className="py-2 px-4">
@@ -205,7 +206,7 @@ const ManageUser = () => {
                     options={blockStatus}
                   /> : <span>{el.isBlocked ? 'Blocked' : 'Action'}</span>}</td> */}
                   <td className="py-2 px-4">
-                    {moment(el.createdAt).format("DD/MM/YYYY")}
+                    {moment(el.updatedAt).format("DD/MM/YYYY")}
                   </td>
                   <td className="py-2 px-4">
                     {editElm?._id === el._id ? (
